@@ -125,11 +125,11 @@ if [ ! -f "$prot_dir/$taxid.tar" ] && [ ! -f "$db_dir/$taxid" ]; then
     tar -cf "$prot_dir/$taxid.tar" -C "$prot_dir/" "$taxid"
     rm -r "$prot_dir/$taxid"
 
-    foldseek createdb "$prot_dir/$taxid.tar" "$db_dir/$taxid" --tar-include ".*cif"
+    foldseek createdb "$prot_dir/$taxid.tar" "$db_dir/$taxid"
 
 elif [ -f "$prot_dir/$taxid.tar" ] && [ ! -f "$db_dir/$taxid" ]; then
 
-    foldseek createdb "$prot_dir/$taxid.tar" "$db_dir/$taxid" --tar-include ".*cif"
+    foldseek createdb "$prot_dir/$taxid.tar" "$db_dir/$taxid"
 
 else
     echo "AlphaFold models of selected organism already downloaded"
