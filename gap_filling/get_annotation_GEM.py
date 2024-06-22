@@ -1,11 +1,9 @@
-#!/usr/bin/env python3.11
+#!/usr/bin/env python3.10
 # @author Giorgia Del Missier
-
 
 import argparse
 import requests, re
 import multiprocessing
-import requests_cache
 import time
 
 
@@ -15,107 +13,6 @@ parser.add_argument('--input', required=True,
 parser.add_argument('--output', required=True,
                     help='output file name (.txt) containing complete annotation for each hit')
 args = parser.parse_args()
-
-
-headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.36'}
-
-requests_cache.install_cache('my_cache')
-
-
-def get_InterPro(protein):
-    """
-    get_InterPro() takes a UniProt identifier as input and uses InterPro API to retrieve information about 
-    the protein's domains (Pfam) and subfamilies (Panther). The function returns a list of Pfam domains 
-    and a string containing the Panther subfamily information. If the requests fail, the function returns 
-    empty lists for the Pfam domains and the Panther subfamily. 
-    """
-
-    # initialize variables
-    pfam, panther = [], ""
-
-    try:
-        # construct the URL for the InterPro API request and send the request
-        url = f"https://www.ebi.ac.uk:443/interpro/wwwapi//entry/all/protein/unreviewed/{protein}"
-        req = requests.get(url, headers=headers)
-
-        # if the API request is successful, parse the JSON payload
-        payload = req.json()
-        # loop through all the InterPro entries in the payload
-        for item in payload["results"]:
-            # check if the entry has any metadata
-            if item["metadata"]:
-                try:
-                    # extract the Pfam domains from the metadata and add them to the pfam list
-                    dom = item["metadata"]["member_databases"]["pfam"]
-                    pfam = pfam + list(dom.keys())
-                except:
-                    # if there are no Pfam domains, pass and continue
-                    pass
-            # check if the entry has any protein information
-            if item["proteins"]:
-                try:
-                    # extract the subfamily information from the protein and store it as a comma-separated string in panther
-                    panther = item["proteins"][0]['entry_protein_locations'][0]["subfamily"]
-                    panther = ", ".join(list(panther.values()))
-                except:
-                    # if there is no subfamily information, pass and continue
-                    pass
-
-    except:
-        try:
-            # if the initial API request fails, try again with reviewed proteins
-            url = f"https://www.ebi.ac.uk:443/interpro/wwwapi//entry/all/protein/reviewed/{protein}"
-            req = requests.get(url, headers=headers)
-            payload = req.json()
-
-            for item in payload["results"]:
-                if item["metadata"]:
-                    try:
-                        dom = item["metadata"]["member_databases"]["pfam"]
-                        pfam = pfam + list(dom.keys())
-                    except:
-                        pass
-                if item["proteins"]:
-                    try:
-                        panther = item["proteins"][0]['entry_protein_locations'][0]["subfamily"]
-                        panther = ", ".join(list(panther.values()))
-                    except:
-                        pass
-        except:
-            # if both requests fail, return empty lists and strings
-            pass
-
-    return pfam, panther
-
-
-def get_KO(protein):
-    """
-    get_KO() takes a UniProt identifier as input and retrieves the KEGG Orthology (KO) ID using the KEGG API.
-    If no KO ID is successfully retrieved, an empty string is returned.
-    """
-
-    try:
-        # build URL for KEGG API request with protein ID
-        url = f"https://rest.kegg.jp/conv/genes/uniprot:{protein}"
-    
-        # send request to KEGG API
-        req = requests.get(url, headers=headers)
-        payload = req.text.strip().split()
-    
-        # if protein ID is valid, use it to retrieve KO (KEGG Orthology) ID
-        if payload != [] and req.status_code == 200:
-            # build new URL for KEGG API request with retrieved gene ID
-            url = f"https://rest.kegg.jp/link/ko/{payload[1]}"
-            req = requests.get(url)
-            payload = req.text.strip().split()
-            if payload != [] and req.status_code == 200:
-                ko = payload[1].split(":")[1]
-                return ko
-    except:
-        # return empty string if KO ID could not be retrieved
-        return ""
-
-    return ""
 
 
 def get_UniProt(protein):
@@ -162,8 +59,6 @@ def process_line(line):
             top_hit = fields[4].strip("()").split(",")[0].strip("''")
 
             # get annotation
-            pfam, panther = get_InterPro(top_hit)
-            ko = get_KO(top_hit)
             uniprot_fields = get_UniProt(top_hit)
 
             # combine all the fields and add them to the result list

@@ -4,7 +4,7 @@
 import argparse
 import cobra
 import pandas as pd
-import ast
+
 
 def parse_arguments():
     """

@@ -1,4 +1,4 @@
-#!/usr/bin/env python3.11
+#!/usr/bin/env python3.10
 # @author Giorgia Del Missier
 
 
