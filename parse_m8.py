@@ -1,66 +1,67 @@
 #!/usr/bin/env python3.10
-# @author Giorgia Del Missier
-
+# Author: Giorgia Del Missier
 
 import argparse
 import json
 
-
-parser = argparse.ArgumentParser()
-parser.add_argument('--input', required=True,
-                    help='input: foldseek results (.m8 file path)')
-parser.add_argument('--input_bh', required=True,
-                    help='input: foldseek reciprocal search results (.m8 file path)')
-parser.add_argument('--input_normalisation', required=True,
-                    help='input: foldseek results for bitscore normalisation (.m8 file path)')
-parser.add_argument('--input_normalisation_bh', required=True,
-                    help='input: foldseek best reciprocals results for bitscore normalisation (.m8 file path)')
-parser.add_argument('--proteome_size', required=True, 
-                    help="proteome size (i.e. number of AlphaFold models) of selected taxid")
-parser.add_argument('--eval_thr', required=True,
-                    help='evalue threshold')
-parser.add_argument('--bits_thr', required=True,
-                    help='bitscore threshold')
+# Argument parser setup
+parser = argparse.ArgumentParser(description="Parse Foldseek results and normalize bitscores.")
+parser.add_argument('--input', required=True, help='Input: Foldseek results (.m8 file path)')
+parser.add_argument('--input_bh', required=True, help='Input: Foldseek reciprocal search results (.m8 file path)')
+parser.add_argument('--input_normalisation', required=True, help='Input: Foldseek results for bitscore normalization (.m8 file path)')
+parser.add_argument('--input_normalisation_bh', required=True, help='Input: Foldseek best reciprocals results for bitscore normalization (.m8 file path)')
+parser.add_argument('--proteome_size', required=True, type=int, help="Proteome size (i.e., number of AlphaFold models) of selected taxid")
+parser.add_argument('--eval_thr', required=True, type=float, help='E-value threshold')
+parser.add_argument('--bits_thr', required=True, type=int, help='Bitscore threshold')
 args = parser.parse_args()
-
 
 def parse_fs(fin, fnormalisation, eval_thr, bits_thr):
     """
-    parse_fs() parses the foldseek output files
+    Parse Foldseek output files and normalize bitscores.
+
+    Parameters:
+    - fin: Path to the input file with Foldseek results
+    - fnormalisation: Path to the input file with Foldseek results for normalization
+    - eval_thr: E-value threshold
+    - bits_thr: Bitscore threshold
+
+    Returns:
+    - Dictionary of queries and their significant hits
     """
+    queries = dict()
+    normalisation = dict()
 
-    queries, normalisation = dict(), dict()
-
+    # Read normalization file
     with open(fnormalisation) as fnorm:
         for line in fnorm:
             line = line.strip().split()
             query, target, evalue, bitscore = line[0], line[1], float(line[-2]), int(line[-1])
-            
-            # extract query and target IDs from headers
-            query = (lambda query : query.split("-")[1] if "-" in query else query)(query)
-            query = (lambda query : query.split(".gz")[0][:-4] if ".gz" in query else query)(query)
-            target = (lambda target : target.split("-")[1] if "-" in target else target)(target)
-            target = (lambda target : target.split(".gz")[0][:-4] if ".gz" in target else target)(target)
+
+            # Extract query and target IDs from headers
+            query = query.split("-")[1] if "-" in query else query
+            query = query.split(".gz")[0][:-4] if ".gz" in query else query
+            target = target.split("-")[1] if "-" in target else target
+            target = target.split(".gz")[0][:-4] if ".gz" in target else target
 
             if query == target:
                 if query not in normalisation:
                     normalisation[query] = bitscore
 
-
+    # Read input file
     with open(fin) as fs_in:
         for line in fs_in:
             line = line.strip().split()
             query, target, evalue, bitscore = line[0], line[1], float(line[-2]), int(line[-1])
-            
-            # extract query and target IDs from headers
-            query = (lambda query : query.split("-")[1] if "-" in query else query)(query)
-            query = (lambda query : query.split(".gz")[0][:-4] if ".gz" in query else query)(query)
-            target = (lambda target : target.split("-")[1] if "-" in target else target)(target)
-            target = (lambda target : target.split(".gz")[0][:-4] if ".gz" in target else target)(target)
-            
+
+            # Extract query and target IDs from headers
+            query = query.split("-")[1] if "-" in query else query
+            query = query.split(".gz")[0][:-4] if ".gz" in query else query
+            target = target.split("-")[1] if "-" in target else target
+            target = target.split(".gz")[0][:-4] if ".gz" in target else target
+
             if query != target:
                 if bitscore > bits_thr and evalue < eval_thr:
-                    bitscore = round(bitscore/normalisation[query], 3)
+                    bitscore = round(bitscore / normalisation.get(query, 1), 3)
                     try:
                         if (target, evalue, bitscore) not in queries[query]:
                             queries[query].append((target, evalue, bitscore))
@@ -69,15 +70,16 @@ def parse_fs(fin, fnormalisation, eval_thr, bits_thr):
 
     return queries
 
-
 if __name__ == "__main__":
-    
-    # parsing the input files
-    all_queries = parse_fs(args.input, args.input_normalisation, float(args.eval_thr), int(args.bits_thr))
-    reciprocal_queries = parse_fs(args.input_bh, args.input_normalisation_bh, float(args.eval_thr), int(args.bits_thr))
+    # Parsing the input files
+    all_queries = parse_fs(args.input, args.input_normalisation, args.eval_thr, args.bits_thr)
+    reciprocal_queries = parse_fs(args.input_bh, args.input_normalisation_bh, args.eval_thr, args.bits_thr)
 
-    print(f"Found significant hits for {len(all_queries)} out of {args.proteome_size} proteins in the target organism\n")
+    print(f"Found significant hits for {len(all_queries)} out of {args.proteome_size} proteins in the target organism")
 
+    # Saving the results to JSON files
     with open(f"{args.input[:-3]}.json", "w") as fall, open(f"{args.input_bh[:-3]}.json", "w") as freci:
         json.dump(all_queries, fall)
         json.dump(reciprocal_queries, freci)
+
+    print(f"Results have been written to {args.input[:-3]}.json and {args.input_bh[:-3]}.json")
