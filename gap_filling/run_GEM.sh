@@ -168,15 +168,5 @@ python3 gap_filling.py --input "$taxid_dir/$taxid.m8" --input_db "$taxid_dir/${t
                        --output "$taxid_dir/${taxid}_hits.txt" --eval_thr $evalue_threshold --bits_thr $bitscore_threshold --tm_thr $tmscore_threshold
 
 echo "done"
-
-####---- ANNOTATION ----####
-
-echo ""
-echo "Annotating best hits"
-echo ""
-
-python3 get_annotation_GEM.py --input "$taxid_dir/${taxid}_hits.txt" --output "$taxid_dir/${taxid}_hits_annotated.txt"
-
-echo "done"
 echo ""
 echo "GEM gap-filling complete!"
