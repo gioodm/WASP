@@ -11,7 +11,6 @@ Additionally, WASP provides a module to map native proteins to orphan reactions 
 <img src="fig.png" alt="drawing" width="600"/>
 </p>
 
-
 <!---
 If you find WASP helpful in your research, please cite us:
 
@@ -68,7 +67,6 @@ Then, install Foldseek in the `/bin` of the project root. Follow the installatio
 
 Example for a Linux AVX2 build:
 
-
 ```sh
 # Linux AVX2 build (check using: cat /proc/cpuinfo | grep avx2)
 wget https://mmseqs.com/foldseek/foldseek-linux-avx2.tar.gz; tar xvzf foldseek-linux-avx2.tar.gz; export PATH=$(pwd)/foldseek/bin/:$PATH
@@ -93,11 +91,8 @@ First, identify the NCBI taxonomy ID of your organism of interest. You can find 
 Once you have identified the taxid, run the pipeline as follows (e.g., for organism S. cerevisiae S288c, taxid: 559292):
 
 ```sh
-  
-  chmod +x run.sh
-
-  ./run.sh 559292
-
+chmod +x run.sh
+./run.sh 559292
 ```
 
 This requires `gsutil` installed.
@@ -113,19 +108,16 @@ Additional parameters can be customised, including:
 Usage examples:
 
 ```sh
-  ./run.sh -e 1e-50 -b 200 -n 5 -i 5 559292
-  ./run.sh -s 5 559292
+./run.sh -e 1e-50 -b 200 -n 5 -i 5 559292
+./run.sh -s 5 559292
 ```
 
 To use a custom dataset (e.g., a newly sequenced genome or a set of proteins from different organisms), create a tarred folder containing the protein structures (`.cif.gz` or `.pdb.gz` format) and place it in a folder called `proteomes/` within the WASP folder. Then run WASP with:
 
 ```sh
-  chmod +x run.sh
-
-  ./run.sh custom_folder.tar
-
+chmod +x run.sh
+./run.sh custom_folder.tar
 ```
-
 
 ### 2.2 GEM gap-filling module
 
@@ -143,9 +135,11 @@ The final `gaps_file.txt` must contain all 4 columns; if the reaction extended n
 
 #### Usage
 
-```
+```sh
+chmod +x run_GEM.sh
 ./run_GEM.sh [-h] [-e evalue_threshold] [-b bitscore_threshold] [-t tmscore] taxid gaps_file.txt
 ```
+
 
 ## References
 
