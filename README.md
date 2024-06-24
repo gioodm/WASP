@@ -73,7 +73,7 @@ wget https://mmseqs.com/foldseek/foldseek-linux-avx2.tar.gz; tar xvzf foldseek-l
 
 ```
 
-Install gsutil and initialise the gcloud CLI, following instructions for your machine at [Google Cloud Storage Documentation](https://cloud.google.com/storage/docs/gsutil_install).
+Install `gsutil` and initialise the gcloud CLI, following instructions for your machine at [Google Cloud Storage Documentation](https://cloud.google.com/storage/docs/gsutil_install).
 
 
 ## 2. Run
@@ -86,14 +86,15 @@ Install gsutil and initialise the gcloud CLI, following instructions for your ma
 ./run.sh [-h] [-e evalue_threshold] [-b bitscore_threshold] [-n max_neighbours] [-N max_neighbours_NaN] taxid
 ```
 
-First, identify the NCBI taxonomy ID of your organism of interest. You can find the ID at [NCBI Taxonomy](https://www.ncbi.nlm.nih.gov/taxonomy). You can use AlphaFold DB to check how many structures are linked to that ID by searching the same ID on the AFDB search bar. This requires gsutil installed.
+First, identify the NCBI taxonomy ID of your organism of interest. You can find the ID at [NCBI Taxonomy](https://www.ncbi.nlm.nih.gov/taxonomy). You can use AlphaFold DB to check how many structures are linked to that ID by searching the same ID on the AFDB search bar.
 
 Once you have identified the taxid, run the pipeline as follows (e.g., for organism S. cerevisiae S288c, taxid: 559292):
 
 ```sh
-    chmod +x run.sh
+  
+  chmod +x run.sh
 
-    ./run.sh 559292
+  ./run.sh 559292
 
 ```
 
@@ -101,26 +102,25 @@ This requires `gsutil` installed.
 
 Additional parameters can be customised, including:
 
-    `-e` evalue_threshold: set the evalue threshold (default: 10e-10)
-    `-b` bitscore threshold: set the bitscore threshold (default: 50)
-    `-n` max_neighbours: set the max number of neighbours (default: 10)
-    `-s` step: set step to add to max neighbours (n) in additional iterations (default: 10)
-    `-i` iterations: set number of iterations to perform (default: 3)
+- `-e` evalue_threshold: set the evalue threshold (default: 10e-10)
+- `-b` bitscore threshold: set the bitscore threshold (default: 50)
+- `-n` max_neighbours: set the max number of neighbours (default: 10)
+- `-s` step: set step to add to max neighbours (n) in additional iterations (default: 10)
+- `-i` iterations: set number of iterations to perform (default: 3)
 
 Usage examples:
 
 ```sh
-    ./run.sh -e 1e-50 -b 200 -n 5 -i 5 559292
-    ./run.sh -s 5 559292
+  ./run.sh -e 1e-50 -b 200 -n 5 -i 5 559292
+  ./run.sh -s 5 559292
 ```
 
-<!---
-If you want to use a custom dataset to predict function (for example, a newly sequenced genome or a set of proteins from different organisms which cannot downloaded in bulk using the above AlphaFold Bucket gsutil command) you can do so by creating a custom tarred folder containing the protein structures (in either .cif.gz or .pdb.gz format) and placing it in a folder called proteomes/ within the WASP folder. Then you can run WASP with:
+To use a custom dataset (e.g., a newly sequenced genome or a set of proteins from different organisms), create a tarred folder containing the protein structures (`.cif.gz` or `.pdb.gz` format) and place it in a folder called `proteomes/` within the WASP folder. Then run WASP with:
 
-```
-    chmod +x run.sh
+```sh
+  chmod +x run.sh
 
-    ./run.sh custom_folder.tar
+  ./run.sh custom_folder.tar
 
 ```
 
@@ -129,29 +129,21 @@ If you want to use a custom dataset to predict function (for example, a newly se
 
 #### Pre-processing
 
-Potential modifications to the python scripts might be needed depending on the GEM format.
+Some pre-processing steps are required to obtain a standardized input file for the WASP pipeline. Potential modifications to the Python scripts might be needed depending on the GEM format.
 
-Some pre-processing steps are required to obtain a standardised input file for the WASP pipeline.
+- `find_orphans.py`: identifies orphan reactions in the GEM (accepted extensions: `.xml`, `.sbml`, `.json`, and `.mat`) using the Python3 `cobrapy` module. Annotation in different formats (accepted: BiGG, Rhea, EC number, KEGG, PubMed, MetaNetX) present in the model is retrieved.
 
-find_orphans.py : identifies orphan reactions in the GEM (accepted extensions: .xml, .sbml, .json and .mat) using the Python3 cobrapy module. Annotation in different formats (accepted: BiGG, Rhea, EC number, KEGG, PubMed, MetaNetX) present in the model is retrieved;
+- `rxn2code.py`: each reaction annotation is mapped to the corresponding Rhea reaction ID and/or EC number when available. The output file includes: 1. reaction id, 2. reaction extended name, 3. Rhea IDs, 4. EC numbers.
+If MetaNetX codes are present, the `reac_xref.tsv` file (retrieved from [MetaNetX](https://www.metanetx.org/mnxdoc/mnxref.html)) is needed.
 
-rxn2code.py : each reaction annotation is mapped to the corresponding Rhea reaction ID and/or EC number, when available. Output file includes: 1. reaction id, 2. reaction extended name, 3. Rhea IDs, 4. EC numbers
+The final `gaps_file.txt` must contain all 4 columns; if the reaction extended name is not present in the model, an empty column should be present. If no Rhea/EC IDs are identified, empty columns should be present instead.
 
-If MetaNetX codes are present, the reac_xref.tsv file (retrieved from: https://www.metanetx.org/mnxdoc/mnxref.html) is needed.
-The final gaps_file must contain all the 4 columns; if the reaction extended name is not present in the model, an empty column should be present. If no Rhea/EC IDs are identified, empty columns should be present instead.
 
 #### Usage
 
 ```
-./run_GEM.sh [-h] [-e evalue_threshold] [-b bitscore_threshold] [-t tmscore] taxid gaps_file
+./run_GEM.sh [-h] [-e evalue_threshold] [-b bitscore_threshold] [-t tmscore] taxid gaps_file.txt
 ```
-
-*gaps_file has to be generated manually, check pre-processing
--->
-
-
-
-
 
 ## References
 
