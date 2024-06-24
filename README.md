@@ -1,16 +1,14 @@
 # WASP: Protein Functional Annotation using AlphaFold structures
   
-This is the official repository for the paper [*WASP: A pipeline for functional annotation of proteins using AlphaFold structural models*]. **WASP**, **<ins>W</ins>hole-proteome <ins>A</ins>nnotation through <ins>S</ins>tructural-homology <ins>P</ins>ipeline**, is a python-based software designed for comprehensive organism annotation at the whole-proteome level based on structural homology.
+Welcome to the official repository for the paper *WASP: A pipeline for functional annotation of proteins using AlphaFold structural models*. **WASP**, **<ins>W</ins>hole-proteome <ins>A</ins>nnotation through <ins>S</ins>tructural-homology <ins>P</ins>ipeline**, is a python-based software designed for comprehensive organism annotation at the whole-proteome level based on structural homology.
 
 WASP is a user-friendly command-line tool that only requires the NCBI taxonomy ID of the organism of interest as an input. Using the computational speed of Foldseek[[1](https://doi.org/10.1038/s41587-023-01773-0)], WASP generates a graphical representation of reciprocal hits between the organism protein query and the AlphaFold database [[2](https://doi.org/10.1038/s41586-021-03819-2), [3](https://doi.org/10.1093/nar/gkab1061)], enabling downstream robust functional enrichment and statistical testing. WASP annotates uncharacterised proteins using multiple functional descriptors, including GO terms, Pfam domains, PANTHER family classification and CATH superfamilies, Rhea IDs and EC numbers. 
 Additionally, WASP provides a module to map native proteins to orphan reactions in genome-scale models based on structural homology.
 
-
-<p  align="center">
-
-<img  src="fig.png"  alt="drawing"  width="600"/>
-
+<p align="center">
+<img src="fig.png" alt="drawing" width="600"/>
 </p>
+
 
 <!---
 If you find WASP helpful in your research, please cite us:
@@ -28,17 +26,31 @@ If you find WASP helpful in your research, please cite us:
     }  
 -->
 
+
+## Table of Contents
+
+1. [Install](#1-install)
+    - [Requirements](#11-requirements)
+    - [Quickstart](#12-quickstart)
+2. [Run](#2-run)
+    - [Whole-proteome annotation](#21-whole-proteome-annotation)
+    - [GEM gap-filling module](#22-gem-gap-filling-module)
+3. [References](#3-references)
+
+
 ## 1. Install
 
 ### 1.1 Requirements
 
-Python >= 3.9; Foldseek >= 8, gsutil
-Manuscript results were obtained using Python 3.10.14 and Foldseek 8-ef4e960
+- Python >= 3.9
+- Foldseek >= 8
+- gsutil
+
+The manuscript results were obtained using Python 3.10.14 and Foldseek 8-ef4e960.
 
 ### 1.2 Quickstart
 
-```
-
+```sh
 mkdir WASP
 cd WASP/
 git clone https://github.com/gioodm/WASP.git
@@ -46,18 +58,22 @@ git clone https://github.com/gioodm/WASP.git
 conda create -n WASP python==3.10 -y
 conda activate WASP
 pip install -r requirements.txt
-
 ```
 
-Install Foldseek to be installed in /bin of the project root, installation instructions at https://github.com/steineggerlab/foldseek, e.g. for a Linux AVX2 build:
+Install Foldseek in the `/bin` of the project root. Follow the installation instructions at [Foldseek GitHub](https://github.com/steineggerlab/foldseek)
 
+Example for a Linux AVX2 build:
+
+
+```sh
 # Linux AVX2 build (check using: cat /proc/cpuinfo | grep avx2)
 wget https://mmseqs.com/foldseek/foldseek-linux-avx2.tar.gz; tar xvzf foldseek-linux-avx2.tar.gz; export PATH=$(pwd)/foldseek/bin/:$PATH
 
+```
 
-Install gsutil and initialise the gcloud CLI, following instructions for your machine at https://cloud.google.com/storage/docs/gsutil_install
+Install gsutil and initialise the gcloud CLI, following instructions for your machine at [Google Cloud Storage Documentation](https://cloud.google.com/storage/docs/gsutil_install).
 
-
+<!---
 ## 2. Run
 
 ### 2.1 Whole-proteome annotation
@@ -126,7 +142,7 @@ The final gaps_file must contain all the 4 columns; if the reaction extended nam
 ```
 
 *gaps_file has to be generated manually, check pre-processing
-
+-->
 
 
 
