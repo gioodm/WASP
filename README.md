@@ -1,6 +1,6 @@
 # WASP: Protein Functional Annotation using AlphaFold structures
   
-Welcome to the official repository for the paper *WASP: A pipeline for functional annotation of proteins using AlphaFold structural models*!
+Welcome to the official repository for the paper *WASP: A pipeline for functional annotation based on AlphaFold structural models*!
 
 **WASP**, **<ins>W</ins>hole-proteome <ins>A</ins>nnotation through <ins>S</ins>tructural-homology <ins>P</ins>ipeline**, is a python-based software designed for comprehensive organism annotation at the whole-proteome level based on structural homology.
 
@@ -8,7 +8,7 @@ WASP is a user-friendly command-line tool that only requires the NCBI taxonomy I
 Additionally, WASP provides a module to map native proteins to orphan reactions in genome-scale models based on structural homology.
 
 <p align="center">
-<img src="fig.png" alt="drawing" width="600"/>
+<img src="fig1.png" alt="drawing" width="600"/>
 </p>
 
 <!---
