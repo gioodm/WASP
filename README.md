@@ -54,9 +54,8 @@ The manuscript results were obtained using Python 3.10.14 and Foldseek 8-ef4e960
 Start by cloning the repository, create the WASP environment and install all python requirements:
 
 ```sh
-mkdir WASP
-cd WASP/
 git clone https://github.com/gioodm/WASP.git
+cd WASP/
 
 conda create -n WASP python==3.10 -y
 conda activate WASP
