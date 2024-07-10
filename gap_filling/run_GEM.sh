@@ -28,6 +28,8 @@ Examples:
 EOF
 }
 
+export PATH=$(pwd)/foldseek/bin/:$PATH 
+
 ####---- CHECK REQUIRED COMMANDS ----####
 
 command -v foldseek >/dev/null 2>&1 || { echo >&2 "foldseek is required but it's not installed. Aborting."; exit 1; }
@@ -81,8 +83,6 @@ echo "Selected tmscore threshold: $tmscore_threshold"
 echo ""
 echo "Downloading required foldseek databases and AlphaFold models:"
 echo ""
-
-export PATH=$(pwd)/foldseek/bin:$PATH
 
 # Define directory names
 db_dir="foldseek_dbs"
