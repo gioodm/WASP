@@ -144,8 +144,8 @@ foldseek prefixid "$db_dir/swissprot"_h "$db_dir/swissprot.lookup" --tsv --threa
 awk 'NR == FNR {f[$1] = $1; next} $2 in f {print $1}' "$taxid_dir/${taxid}_upIDs.txt" "$db_dir/swissprot.lookup" > "$db_dir/subset$taxid.tsv"
 
 foldseek createsubdb "$db_dir/subset$taxid.tsv" "$db_dir/swissprot" "$db_dir/subdb$taxid"
-foldseek createsubdb "$db_dir/subset$taxid.tsv" "$db_dir/swissprot_ss" "$db_dir/subdb$taxid_ss"
-foldseek createsubdb "$db_dir/subset$taxid.tsv" "$db_dir/swissprot_ca" "$db_dir/subdb$taxid_ca"
+foldseek createsubdb "$db_dir/subset$taxid.tsv" "$db_dir/swissprot_ss" "$db_dir/subdb$taxid"_ss
+foldseek createsubdb "$db_dir/subset$taxid.tsv" "$db_dir/swissprot_ca" "$db_dir/subdb$taxid"_ca
 rm "$db_dir/subset$taxid.tsv"
 
 foldseek search "$db_dir/subdb$taxid" "$db_dir/$taxid" "$taxid_dir/$taxid" tmp -a 1 --threads 64
