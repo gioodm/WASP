@@ -94,7 +94,7 @@ mkdir -p "$db_dir" "$prot_dir" "$results_dir"
 
 # Download foldseek databases if not already present
 if [ ! -f "$db_dir/swissprot" ]; then
-    foldseek databases Alphafold/Swiss-Prot "$db_dir/swissprot" tmp
+    foldseek databases Alphafold/Swiss-Prot "$db_dir/swissprot" tmp --remove-tmp-files 1
     rm -rf tmp
 else
     echo "Foldseek databases already downloaded"
