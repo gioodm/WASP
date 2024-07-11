@@ -103,14 +103,16 @@ fi
 # Download AlphaFold models if not already present
 if [ ! -f "$prot_dir/$taxid.tar" ] && [ ! -f "$db_dir/$taxid" ]; then
     mkdir -p "$prot_dir/$taxid"
-    gsutil -m cp "gs://public-datasets-deepmind-alphafold-v4/proteomes/proteome-tax_id-$taxid-*_v4.tar" "$prot_dir/"
-    for f in "$prot_dir/proteome-tax_id-$taxid-*_v4.tar"; do
+    gsutil -m cp gs://public-datasets-deepmind-alphafold-v4/proteomes/proteome-tax_id-"$taxid-*"_v4.tar $prot_dir/
+    for f in "$prot_dir/proteome-tax_id-$taxid"-*_v4.tar; do
         tar -xf "$f" -C "$prot_dir/$taxid"
         rm "$f"
     done
-    find "$prot_dir/$taxid" -name '*.json.gz' -delete
-    tar -cf "$prot_dir/$taxid.tar" -C "$prot_dir" "$taxid"
-    rm -rf "$prot_dir/$taxid"
+    for f in "$prot_dir/$taxid"/*.json.gz; do
+        rm "$f" 
+    done
+    tar -cf "$prot_dir/$taxid.tar" -C "$prot_dir/" "$taxid"
+    rm -r "$prot_dir/$taxid"
 
     foldseek createdb "$prot_dir/$taxid.tar" "$db_dir/$taxid"
 elif [ -f "$prot_dir/$taxid.tar" ] && [ ! -f "$db_dir/$taxid" ]; then
