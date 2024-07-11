@@ -109,9 +109,10 @@ with open(args.input_rxn2up) as f_rxn2up:
         if line.startswith("#"):
             continue
         line = line.strip().split("\t")
-        rxn_codes = [item for item in ast.literal_eval(line[2]) if item not in ['', '[]']]
-        rxn_up = [item for item in ast.literal_eval(line[3]) if item not in ['', '[]']]
-        rxn2up_dict[(line[0], line[1])] = (rxn_codes, rxn_up)
+        if len(line) == 4:
+            rxn_codes = [item for item in line[2].split(', ')]
+            rxn_up = [item for item in line[3].split(', ')]
+            rxn2up_dict[(line[0], line[1])] = (rxn_codes, rxn_up)
 
 tms_dict = {}
 with open(args.input_db) as f_db:
