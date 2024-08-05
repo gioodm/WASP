@@ -90,7 +90,8 @@ chmod +x run.sh
 ./run.sh 559292
 ```
 
-This requires `gsutil` installed.
+This requires `gsutil` installed.    
+Note: On the first run, the AlphaFold DB clustered at 50% will need to be downloaded using Foldseek. This can take some time depending on your machine's performance and internet speed. Ensure you have sufficient storage space to host the database. After the initial setup, WASP annotation will take up to 1 hour for a proteome of approximately 6000 proteins.
 
 Additional parameters can be customised, including:
 
