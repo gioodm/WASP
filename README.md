@@ -1,15 +1,14 @@
 # WASP: Protein Functional Annotation using AlphaFold structures
-  
+
 Welcome to the official repository for the paper *WASP: A pipeline for functional annotation based on AlphaFold structural models*!
 
-**WASP**, **<ins>W</ins>hole-proteome <ins>A</ins>nnotation through <ins>S</ins>tructural-homology <ins>P</ins>ipeline**, is a python-based software designed for comprehensive organism annotation at the whole-proteome level based on structural homology.
+**WASP**, **`<ins>`W`</ins>`hole-proteome `<ins>`A`</ins>`nnotation through `<ins>`S`</ins>`tructural-homology `<ins>`P`</ins>`ipeline**, is a python-based software designed for comprehensive organism annotation at the whole-proteome level based on structural homology.
 
 WASP is a user-friendly command-line tool that only requires the NCBI taxonomy ID of the organism of interest as an input. Using the computational speed of Foldseek [[1](https://doi.org/10.1038/s41587-023-01773-0)], WASP generates a graphical representation of reciprocal hits between the organism protein query and the AlphaFold database [[2](https://doi.org/10.1038/s41586-021-03819-2), [3](https://doi.org/10.1093/nar/gkab1061)], enabling downstream robust functional enrichment and statistical testing. WASP annotates uncharacterised proteins using multiple functional descriptors, including GO terms, Pfam domains, PANTHER family classification and CATH superfamilies, Rhea IDs and EC numbers. Additionally, WASP provides a module to map native proteins to orphan reactions in genome-scale models based on structural homology.
 
 <p align="center">
 <img src="logo.png" alt="drawing" width="800"/>
 </p>
-
 
 <!---
 If you find WASP helpful in your research, please cite us:
@@ -27,17 +26,15 @@ If you find WASP helpful in your research, please cite us:
     }  
 -->
 
-
 ## Table of Contents
 
 1. [Install](#1-install)
-    - [Requirements](#11-requirements)
-    - [Quickstart](#12-quickstart)
+   - [Requirements](#11-requirements)
+   - [Quickstart](#12-quickstart)
 2. [Run](#2-run)
-    - [Whole-proteome annotation](#21-whole-proteome-annotation)
-    - [GEM gap-filling module](#22-gem-gap-filling-module)
+   - [Whole-proteome annotation](#21-whole-proteome-annotation)
+   - [GEM gap-filling module](#22-gem-gap-filling-module)
 3. [References](#3-references)
-
 
 ## 1. Install
 
@@ -73,7 +70,6 @@ wget https://mmseqs.com/foldseek/foldseek-linux-avx2.tar.gz; tar xvzf foldseek-l
 ```
 
 Install `gsutil` and initialise the gcloud CLI, following instructions for your machine at [Google Cloud Storage Documentation](https://cloud.google.com/storage/docs/gsutil_install).
-
 
 ## 2. Run
 
@@ -111,7 +107,7 @@ Usage examples:
 ./run.sh -s 5 559292
 ```
 
-To use a custom dataset (e.g., a newly sequenced genome or a set of proteins from different organisms), create a tarred folder containing the protein structures (`.cif.gz` or `.pdb.gz` format) and place it in a folder called `proteomes/` within the WASP folder. Then run WASP with:
+To use a custom dataset (e.g., a newly sequenced genome or a set of proteins from different organisms), create a tarred folder containing the protein structures (`.cif.gz` or `.pdb.gz` format) and place it in a folder called `proteomes/` within the WASP folder - example folder in `example_files/price.tar`. Then run WASP with:
 
 ```sh
 chmod +x run.sh
@@ -125,12 +121,10 @@ chmod +x run.sh
 Some pre-processing steps are required to obtain a standardized input file for the WASP pipeline. Potential modifications to the Python scripts might be needed depending on the GEM format.
 
 - `find_orphans.py`: identifies orphan reactions in the GEM (accepted extensions: `.xml`, `.sbml`, `.json`, and `.mat`) using the Python3 `cobrapy` module. Annotation in different formats (accepted: BiGG, Rhea, EC number, KEGG, PubMed, MetaNetX) present in the model is retrieved.
-
 - `rxn2code.py`: each reaction annotation is mapped to the corresponding Rhea reaction ID and/or EC number when available. The output file includes: 1. reaction id, 2. reaction extended name, 3. Rhea IDs, 4. EC numbers.
-If MetaNetX codes are present, the `reac_xref.tsv` file (retrieved from [MetaNetX](https://www.metanetx.org/mnxdoc/mnxref.html)) is needed.
+  If MetaNetX codes are present, the `reac_xref.tsv` file (retrieved from [MetaNetX](https://www.metanetx.org/mnxdoc/mnxref.html)) is needed.
 
-The final `gaps_file.txt` must contain all 4 columns; if the reaction extended name is not present in the model, an empty column should be present. If no Rhea/EC IDs are identified, empty columns should be present instead.
-
+The final `gaps_file.txt` must contain all 4 columns; if the reaction extended name is not present in the model, an empty column should be present. If no Rhea/EC IDs are identified, empty columns should be present instead. An example input file can be found at `example_files/284591_gaps.txt`.
 
 #### Usage
 
@@ -138,7 +132,6 @@ The final `gaps_file.txt` must contain all 4 columns; if the reaction extended n
 chmod +x run_GEM.sh
 ./run_GEM.sh [-h] [-e evalue_threshold] [-b bitscore_threshold] [-t tmscore] taxid gaps_file.txt
 ```
-
 
 ## References
 
