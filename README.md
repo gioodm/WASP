@@ -115,17 +115,19 @@ chmod +x run.sh
 ./run.sh custom_folder.tar
 ```
 
+An example of the final output can be found at `example_files/price_annotated.xlsx`
+
 ### 2.2 GEM gap-filling module
 
 #### Pre-processing
 
 Some pre-processing steps are required to obtain a standardized input file for the WASP pipeline. Potential modifications to the Python scripts might be needed depending on the GEM format.
 
-- `find_orphans.py`: identifies orphan reactions in the GEM (accepted extensions: `.xml`, `.sbml`, `.json`, and `.mat`) using the Python3 `cobrapy` module. Annotation in different formats (accepted: BiGG, Rhea, EC number, KEGG, PubMed, MetaNetX) present in the model is retrieved.
+- `find_orphans.py`: identifies orphan reactions in the GEM (accepted extensions: `.xml`, `.sbml`, `.json`, and `.mat`) using the Python3 `cobrapy` module. Annotation in different formats (accepted: BiGG, Rhea, EC number, KEGG, PubMed, MetaNetX) present in the model is retrieved - input example at: `example_files/gap_filling/iYLI649.xml`, output example at: `example_files/gap_filling/iYLI649_orphans.txt`.
 - `rxn2code.py`: each reaction annotation is mapped to the corresponding Rhea reaction ID and/or EC number when available. The output file includes: 1. reaction id, 2. reaction extended name, 3. Rhea IDs, 4. EC numbers.
-  If MetaNetX codes are present, the `reac_xref.tsv` file (retrieved from [MetaNetX](https://www.metanetx.org/mnxdoc/mnxref.html)) is needed.
+  If MetaNetX codes are present, the `reac_xref.tsv` file (retrieved from [MetaNetX](https://www.metanetx.org/mnxdoc/mnxref.html)) is needed - input example at: `example_files/gap_filling/iYLI649_orphans.txt`, output example at: `example_files/gap_filling/iYLI649_gaps.txt`.
 
-The final `gaps_file.txt` must contain all 4 columns; if the reaction extended name is not present in the model, an empty column should be present. If no Rhea/EC IDs are identified, empty columns should be present instead. An example input file can be found at `example_files/284591_gaps.txt`.
+The final `gaps_file.txt` must contain all 4 columns; if the reaction extended name is not present in the model, an empty column should be present. If no Rhea/EC IDs are identified, empty columns should be present instead.
 
 #### Usage
 
@@ -133,6 +135,8 @@ The final `gaps_file.txt` must contain all 4 columns; if the reaction extended n
 chmod +x run_GEM.sh
 ./run_GEM.sh [-h] [-e evalue_threshold] [-b bitscore_threshold] [-t tmscore] taxid gaps_file.txt
 ```
+
+An example of the final output can be found at `example_files/gap_filling/iYLI649_hits.txt`
 
 ## References
 
